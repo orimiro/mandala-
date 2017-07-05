@@ -2,22 +2,46 @@ from graph import Node
 
 class Triangle:  # shape?
 
-    def __init__(self, node, coordinates, color=None):
+    def __init__(self, node, coordinate, up, color=None):
         self.node = node
-        self.coordinates = coordinates
+        self.coordinate = coordinate
+        self.up = up
         self.color = color
 
-    def draw(self):
-        pass
+    def draw(self, scale):
+        s = createShape()
+        s.beginShape()
+        coordinates = self.points()
+        for c in coordinates:
+            cart = c.cartesian(scale)
+            s.vertex(cart[0], cart[1])
+        s.endShape(CLOSE)
+        shape(s)
+
+    def points(self):
+        if(self.up is False):
+            return (Coordinate(self.coordinate.a + 1, self.coordinate.b),
+                    Coordinate(self.coordinate.a + 1, self.coordinate.b - 1),
+                    self.coordinate)
+        else:
+            return (Coordinate(self.coordinate.a - 1, self.coordinate.b),
+                    Coordinate(self.coordinate.a - 1, self.coordinate.b + 1),
+                    self.coordinate)
+
 
 h = sqrt(0.75)  # height of the triangle
+
 class Coordinate:
+
     def __init__(self, a, b, c=None):
-        if(c is None):
-            c = 1 - (a+b)
-        if (a + b + c != 1):
+        self.a = a
+        self.b = b
+        self.c = c
+        if(self.c is None):
+            self.c = 1 - (a + b)
+        if (self.a + self.b + self.c != 1):
             raise Exception("barys are != 1")
-        self.bary = (a, b, c)
+        self.bary = (self.a, self.b, self.c)
 
     def cartesian(self, scale):
         x = 0.5 * self.bary[1] - 0.5 * self.bary[2]

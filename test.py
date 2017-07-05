@@ -1,12 +1,13 @@
 from graph import Node
 from triangle import Coordinate
+from triangle import Triangle
 
 def testNode():
     a = Node(None)
     b = Node(None)
-    c = Node(None,a,b)
-    d = Node(None,a)
-    e = Node(None,c)
+    c = Node(None, a, b)
+    d = Node(None, a)
+    e = Node(None, c)
     assert(a not in a.children)
     assert(a not in b.children)
     assert(a in c.children)
@@ -35,9 +36,9 @@ def testNode():
 def testNode2():
     a = Node(None)
     b = Node(None)
-    c = Node(None,a, b)
-    d = Node(None,a, b)
-    e = Node(None,c,d)
+    c = Node(None, a, b)
+    d = Node(None, a, b)
+    e = Node(None, c, d)
     assert(a not in a.children)
     assert(a not in b.children)
     assert(a in c.children)
@@ -63,11 +64,18 @@ def testNode2():
     assert(e in c.children)
     assert(e in d.children)
     assert(e not in e.children)
-    
+
 def testCoordinate():
     g = Coordinate(1, 0, 0)
-    assert(g.cartesian(1) == (0,0))
+    assert(g.cartesian(1) == (0, 0))
     g = Coordinate(0, 1, 0)
-    assert(g.cartesian(1) == (0.5, - sqrt(0.75))), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
+    assert(g.cartesian(1) == (0.5, - sqrt(0.75))
+           ), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
     g = Coordinate(0, 0, 1)
-    assert(g.cartesian(1) == (-0.5, - sqrt(0.75))), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
+    assert(g.cartesian(1) == (-0.5, - sqrt(0.75))
+           ), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
+
+def triangleDrawing(scale):
+    loc = Coordinate(1, 0, 0)
+    tr = Triangle(None, loc, True)
+    tr.draw(scale)

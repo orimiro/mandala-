@@ -7,8 +7,9 @@ def setup():
     runTest()
 
 def draw():
+    translate(width/2,height/2)
+    test.triangleDrawing(100)
     pass
-    c = Node()
     
     
 def runTest():
