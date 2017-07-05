@@ -26,3 +26,18 @@ def hexagonDrawing(scale):
     tr3.draw(scale)
     tr4.draw(scale)
     tr5.draw(scale)
+
+def triangleDrawEast(scale, start, end, up):
+    for i in range(start, end):
+        tr = Triangle(None, Coordinate(0, i), up)
+        tr.draw(scale)
+
+def triangleDrawSE(scale, start, end, up):
+    for i in range(start, end):
+        tr = Triangle(None, Coordinate(i, 0), up)
+        tr.draw(scale)
+
+def triangleDrawSW(scale, start, end, up):
+    for i in range(start, end):
+        tr = Triangle(None, Coordinate(i, -i), up)
+        tr.draw(scale)

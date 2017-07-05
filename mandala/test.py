@@ -79,3 +79,4 @@ def triangleDrawing(scale):
     loc = Coordinate(1, 0, 0)
     tr = Triangle(None, loc, True)
     tr.draw(scale)
+    
