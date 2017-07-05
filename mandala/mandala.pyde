@@ -9,10 +9,8 @@ def setup():
 
 def draw():
     translate(width/2,height/2)
-    patternGen.hexagonDrawing(100)
     background(0x101010)
-    patternGen.triangleDrawSW(20, 0, int(mouseX / 50), True)
-    patternGen.triangleDrawSE(20, 0, int(mouseX / 50), True)
+    patternGen.demo()
 
 def runTest():
     test.testNode()

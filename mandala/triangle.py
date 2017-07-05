@@ -47,3 +47,38 @@ class Coordinate:
         x = 0.5 * self.bary[1] - 0.5 * self.bary[2]
         y = - h * self.bary[1] - h * self.bary[2]
         return (scale * x, scale * y)
+
+    def east(self, n=1):
+        return Coordinate(self.a, self.b+n)
+    def west(self, n=1):
+        return self.east(-n)
+    def se(self, n=1):
+        return Coordinate(self.a+n, self.b)
+    def nw(self, n=1):
+        return self.se(-n)
+    def sw(self, n=1):
+        return Coordinate(self.a+n, self.b-n)
+    def ne(self, n=1):
+        return self.sw(-n)
+    
+    def neighbor(self, dir, n=1):
+        if dir == 0:
+            return self.sw(n)
+        elif dir == 1:
+            return self.east(-n)
+        elif dir == 2:
+            return self.se(-n)
+        elif dir == 3:
+            return self.sw(-n)
+        elif dir == 4:
+            return self.east(n)
+        elif dir == 5:
+            return self.se(n)
+
+    def neighbors(self, n=1):
+        yield self.sw(n)
+        yield self.east(-n)
+        yield self.se(-n)
+        yield self.sw(-n)
+        yield self.east(n)
+        yield self.se(n)
