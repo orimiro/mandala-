@@ -1,5 +1,5 @@
 from graph import Node
-import test
+import test, patternGen
 
 def setup():
     size(400,400)
@@ -8,7 +8,7 @@ def setup():
 
 def draw():
     translate(width/2,height/2)
-    test.triangleDrawing(100)
+    patternGen.hexagonDrawing(100)
     pass
     
     
