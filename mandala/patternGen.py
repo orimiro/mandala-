@@ -38,6 +38,8 @@ def nativeHexagon(scale, coord):
     shape(s)
 
 def hexagonCircle(scale, coord, line):
+    if line < 1:
+        return
     edges = [coord.neighbor(i, line) for i in range(6)]
     drawLine0(scale, edges[0], edges[1])
     drawLine1(scale, edges[1], edges[2])
@@ -50,6 +52,8 @@ def drawLine0(scale, a, b):  # sharp edge south, from sharp edge to sharp edge
     while(True):
         tr = Triangle(None, a.ne(), False)
         tr.draw(scale)
+        #if(a.a == b.a and a.b == b.b):
+        #    break
         a = a.east()
         if(a.a == b.a and a.b == b.b):
             break
@@ -60,6 +64,8 @@ def drawLine1(scale, a, b):  # sharp edge se, from sharp edge to sharp edge
     while(True):
         tr = Triangle(None, a, True)
         tr.draw(scale)
+        #if(a.a == b.a and a.b == b.b):
+        #    break
         a = a.ne()
         if(a.a == b.a and a.b == b.b):
             break
@@ -68,6 +74,8 @@ def drawLine1(scale, a, b):  # sharp edge se, from sharp edge to sharp edge
 
 def drawLine2(scale, a, b):  # sharp edge ne, from sharp edge to sharp edge
     while(True):
+        if(a.a == b.a and a.b == b.b):
+            break
         a = a.nw()
         tr = Triangle(None, a, False)
         tr.draw(scale)
@@ -80,6 +88,8 @@ def drawLine3(scale, a, b):  # sharp edge south(-1), from sharp edge to sharp ed
     while(True):
         tr = Triangle(None, a.ne(-1), True)
         tr.draw(scale)
+        #if(a.a == b.a and a.b == b.b):
+        #    break
         a = a.east(-1)
         if(a.a == b.a and a.b == b.b):
             break
@@ -90,6 +100,8 @@ def drawLine4(scale, a, b):  # sharp edge se(-1), from sharp edge to sharp edge
     while(True):
         tr = Triangle(None, a, False)
         tr.draw(scale)
+        #if(a.a == b.a and a.b == b.b):
+        #    break
         a = a.ne(-1)
         if(a.a == b.a and a.b == b.b):
             break
@@ -98,6 +110,8 @@ def drawLine4(scale, a, b):  # sharp edge se(-1), from sharp edge to sharp edge
         
 def drawLine5(scale, a, b):  # sharp edge ne, from sharp edge to sharp edge
     while(True):
+        if(a.a == b.a and a.b == b.b):
+            break
         a = a.nw(-1)
         tr = Triangle(None, a, True)
         tr.draw(scale)
@@ -153,5 +167,8 @@ def demo():
     #triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
     #triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
     #triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
-    hexagonCircle(scale, Coordinate(1, 0, 0), 10)
-    #hexagonCircle(scale, Coordinate(1, 0, 0), abs(int(mouseY/100)))            #<--- doesnt work :(
+    #hexagonCircle(scale, Coordinate(1, 0, 0), 1)
+    c = Coordinate(1, 0, 0).sw().se()
+    hexagonCircle(scale, c, int(mouseY/25))
+    hexagonCircle(scale, c.ne(5), int(mouseY/25))
+    hexagonCircle(scale, c.nw(5), int(mouseY/25))

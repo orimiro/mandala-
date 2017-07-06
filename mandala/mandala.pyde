@@ -11,7 +11,7 @@ def draw():
     translate(width/2,height/2)
     background(0x232323)
     patternGen.demo()
-    filter(BLUR,2)
+    #filter(BLUR,2)
     #filter(INVERT)
 
 def runTest():
