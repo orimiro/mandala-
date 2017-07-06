@@ -74,7 +74,9 @@ def testCoordinate():
     g = Coordinate(0, 0, 1)
     assert(g.cartesian(1) == (-0.5, - sqrt(0.75))
            ), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
-
+    assert(g == Coordinate(0,0,1))
+    assert(g != Coordinate(1,0,0))
+    assert(g != Coordinate(0,1,0))
 def triangleDrawing(scale):
     loc = Coordinate(1, 0, 0)
     tr = Triangle(None, loc, True)

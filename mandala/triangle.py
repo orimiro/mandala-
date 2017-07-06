@@ -16,6 +16,8 @@ class Triangle:  # shape?
             cart = c.cartesian(scale)
             s.vertex(cart[0], cart[1])
         s.endShape(CLOSE)
+        noStroke()
+        fill(0,100,100)
         shape(s)
 
     def points(self):
@@ -42,7 +44,10 @@ class Coordinate:
         if (self.a + self.b + self.c != 1):
             raise Exception("barys are != 1")
         self.bary = (self.a, self.b, self.c)
-
+    def __eq__(self, other):
+        b1 = self.bary
+        b2 = other.bary
+        return b1[0] == b2[0] and b1[1] == b2[1] # no need to check 3rd
     def cartesian(self, scale):
         x = 0.5 * self.bary[1] - 0.5 * self.bary[2]
         y = - h * self.bary[1] - h * self.bary[2]
@@ -65,20 +70,23 @@ class Coordinate:
         if dir == 0:
             return self.sw(n)
         elif dir == 1:
-            return self.east(-n)
+            return self.se(n)
         elif dir == 2:
-            return self.se(-n)
+            return self.east(n)
         elif dir == 3:
             return self.sw(-n)
         elif dir == 4:
-            return self.east(n)
+            return self.se(-n)
         elif dir == 5:
-            return self.se(n)
+            return self.east(-n)
 
     def neighbors(self, n=1):
         yield self.sw(n)
-        yield self.east(-n)
-        yield self.se(-n)
-        yield self.sw(-n)
-        yield self.east(n)
         yield self.se(n)
+        yield self.east(n)
+        yield self.sw(-n)
+        yield self.se(-n)
+        yield self.east(-n)
+    def __str__(self):
+        b = self.bary
+        return "({},{},{})".format(b[0], b[1], b[2])
