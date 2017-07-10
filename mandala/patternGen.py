@@ -41,83 +41,30 @@ def hexagonCircle(scale, coord, line):
     if line < 1:
         return
     edges = [coord.neighbor(i, line) for i in range(6)]
-    drawLine0(scale, edges[0], edges[1])
-    drawLine1(scale, edges[1], edges[2])
-    drawLine2(scale, edges[2], edges[3])
-    drawLine3(scale, edges[3], edges[4])
-    drawLine4(scale, edges[4], edges[5])
-    drawLine5(scale, edges[5], edges[0])
+    for i in range (6):
+        drawLine(scale, edges[i], edges[(i+1)%6])
 
-def drawLine0(scale, a, b):  # sharp edge south, from sharp edge to sharp edge
-    while(True):
-        tr = Triangle(None, a.ne(), False)
-        tr.draw(scale)
-        #if(a.a == b.a and a.b == b.b):
-        #    break
-        a = a.east()
-        if(a.a == b.a and a.b == b.b):
-            break
-        tr = Triangle(None, a, True)
-        tr.draw(scale)
 
-def drawLine1(scale, a, b):  # sharp edge se, from sharp edge to sharp edge
+def drawLine(scale, a, b):
+    dir = a.lineDir(b)
+    if( dir % 3 == 2):
+        global x
+        x = lambda l: l.neighbor((dir + 1) % 6)
+        y = lambda l: l
+    elif(dir % 3 == 0):
+        x = lambda l: l
+        y = lambda l: l.neighbor((dir + 1) % 6)
+    else:
+        x = lambda l: l.neighbor((dir) % 6)
+        y = lambda l: l.neighbor((dir + 2) % 6)
+    c = 0
     while(True):
-        tr = Triangle(None, a, True)
+        tr = Triangle(None, x(a), dir % 2 != 0)
         tr.draw(scale)
-        #if(a.a == b.a and a.b == b.b):
-        #    break
-        a = a.ne()
+        a = a.neighbor(dir)
         if(a.a == b.a and a.b == b.b):
             break
-        tr = Triangle(None, a.nw(), False)
-        tr.draw(scale)
-
-def drawLine2(scale, a, b):  # sharp edge ne, from sharp edge to sharp edge
-    while(True):
-        if(a.a == b.a and a.b == b.b):
-            break
-        a = a.nw()
-        tr = Triangle(None, a, False)
-        tr.draw(scale)
-        if(a.a == b.a and a.b == b.b):
-            break
-        tr = Triangle(None, a.sw(), True)
-        tr.draw(scale)
-        
-def drawLine3(scale, a, b):  # sharp edge south(-1), from sharp edge to sharp edge
-    while(True):
-        tr = Triangle(None, a.ne(-1), True)
-        tr.draw(scale)
-        #if(a.a == b.a and a.b == b.b):
-        #    break
-        a = a.east(-1)
-        if(a.a == b.a and a.b == b.b):
-            break
-        tr = Triangle(None, a, False)
-        tr.draw(scale)
-        
-def drawLine4(scale, a, b):  # sharp edge se(-1), from sharp edge to sharp edge
-    while(True):
-        tr = Triangle(None, a, False)
-        tr.draw(scale)
-        #if(a.a == b.a and a.b == b.b):
-        #    break
-        a = a.ne(-1)
-        if(a.a == b.a and a.b == b.b):
-            break
-        tr = Triangle(None, a.nw(-1), True)
-        tr.draw(scale)
-        
-def drawLine5(scale, a, b):  # sharp edge ne, from sharp edge to sharp edge
-    while(True):
-        if(a.a == b.a and a.b == b.b):
-            break
-        a = a.nw(-1)
-        tr = Triangle(None, a, True)
-        tr.draw(scale)
-        if(a.a == b.a and a.b == b.b):
-            break
-        tr = Triangle(None, a.sw(-1), False)
+        tr = Triangle(None, y(a), dir % 2 == 0)
         tr.draw(scale)
 
 def triangleDrawEast(scale, start, end, up):
@@ -163,12 +110,12 @@ def triangleESE(scale, start, n, up):
     triangleAB(scale, Coordinate(a - 1, b + 1), floor(n / 2), not up)
 def demo():
     scale = 20
-    #triangleAB(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    #triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    #triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    #triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
-    #hexagonCircle(scale, Coordinate(1, 0, 0), 1)
-    c = Coordinate(1, 0, 0).sw().se()
-    hexagonCircle(scale, c, int(mouseY/25))
-    hexagonCircle(scale, c.ne(5), int(mouseY/25))
-    hexagonCircle(scale, c.nw(5), int(mouseY/25))
+    # triangleAB(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    # triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    # triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    # triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
+    # hexagonCircle(scale, Coordinate(1, 0, 0), 1)
+    c = Coordinate(1, 0, 0).sw(2).se(2)
+    hexagonCircle(scale, c, int(mouseY / 25))
+    hexagonCircle(scale, c.ne(5), int(mouseY / 25))
+    hexagonCircle(scale, c.nw(5), int(mouseY / 25))

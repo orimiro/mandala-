@@ -18,3 +18,4 @@ def runTest():
     test.testNode()
     test.testNode2()
     test.testCoordinate()
+    test.testLineDir()

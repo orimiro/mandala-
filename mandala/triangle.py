@@ -17,7 +17,7 @@ class Triangle:  # shape?
             s.vertex(cart[0], cart[1])
         s.endShape(CLOSE)
         noStroke()
-        fill(0,100,100)
+        fill(0, 100, 100)
         shape(s)
 
     def points(self):
@@ -44,28 +44,55 @@ class Coordinate:
         if (self.a + self.b + self.c != 1):
             raise Exception("barys are != 1")
         self.bary = (self.a, self.b, self.c)
+
     def __eq__(self, other):
         b1 = self.bary
         b2 = other.bary
-        return b1[0] == b2[0] and b1[1] == b2[1] # no need to check 3rd
+        return b1[0] == b2[0] and b1[1] == b2[1]  # no need to check 3rd
+
     def cartesian(self, scale):
         x = 0.5 * self.bary[1] - 0.5 * self.bary[2]
         y = - h * self.bary[1] - h * self.bary[2]
         return (scale * x, scale * y)
 
+    def bary_sameLine(self, i):
+        return (i.a == self.a or i.b == self.b or i.c == self.c)
+
+    def lineDir(self, i):
+        if(self.bary_sameLine(i)):
+            if(i.c == self.c and i.a >= self.a and i.b <= self.b):
+                return 0
+            if(i.b == self.b and i.a >= self.a and i.c <= self.c):
+                return 1
+            if(i.a == self.a and i.b >= self.b and i.c <= self.c):
+                return 2
+            if(i.c == self.c and i.a <= self.a and i.b >= self.b):
+                return 3
+            if(i.b == self.b and i.a <= self.a and i.c >= self.c):
+                return 4
+            if(i.a == self.a and i.b <= self.b and i.c >= self.c):
+                return 5
+        else:
+            raise Exception("barys are on different lines")
+
     def east(self, n=1):
-        return Coordinate(self.a, self.b+n)
+        return Coordinate(self.a, self.b + n)
+
     def west(self, n=1):
         return self.east(-n)
+
     def se(self, n=1):
-        return Coordinate(self.a+n, self.b)
+        return Coordinate(self.a + n, self.b)
+
     def nw(self, n=1):
         return self.se(-n)
+
     def sw(self, n=1):
-        return Coordinate(self.a+n, self.b-n)
+        return Coordinate(self.a + n, self.b - n)
+
     def ne(self, n=1):
         return self.sw(-n)
-    
+
     def neighbor(self, dir, n=1):
         if dir == 0:
             return self.sw(n)
@@ -87,6 +114,7 @@ class Coordinate:
         yield self.sw(-n)
         yield self.se(-n)
         yield self.east(-n)
+
     def __str__(self):
         b = self.bary
         return "({},{},{})".format(b[0], b[1], b[2])

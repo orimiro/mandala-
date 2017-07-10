@@ -74,11 +74,25 @@ def testCoordinate():
     g = Coordinate(0, 0, 1)
     assert(g.cartesian(1) == (-0.5, - sqrt(0.75))
            ), "Wrong cartesian coordinates: {}".format(g.cartesian(1))
-    assert(g == Coordinate(0,0,1))
-    assert(g != Coordinate(1,0,0))
-    assert(g != Coordinate(0,1,0))
+    assert(g == Coordinate(0, 0, 1))
+    assert(g != Coordinate(1, 0, 0))
+    assert(g != Coordinate(0, 1, 0))
 def triangleDrawing(scale):
     loc = Coordinate(1, 0, 0)
     tr = Triangle(None, loc, True)
     tr.draw(scale)
-    
+def testLineDir():
+    a = Coordinate(1, 0, 0)
+    b = a.sw(3)
+    c = a.se(3)
+    assert(a.lineDir(b) == 0)
+    assert(a.lineDir(c) == 1)
+    assert(b.lineDir(c) == 2)
+    assert(b.lineDir(a) == 3)
+    assert(c.lineDir(a) == 4)
+    assert(c.lineDir(b) == 5)
+    try:
+        a.ne().nw().lineDir(a)
+    except Exception as exp:
+        y = str(exp)
+    assert(y == "barys are on different lines")
