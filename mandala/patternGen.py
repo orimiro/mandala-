@@ -47,13 +47,13 @@ def hexagonCircle(scale, coord, line):
 
 def drawLine(scale, a, b):
     dir = a.lineDir(b) #getting line direction
-    if( dir % 3 == 2): #west and east
+    if( dir % 3 == 2): # 2 and 5 --> west and east
         x = lambda l: l.neighbor((dir + 1) % 6)
         y = lambda l: l
-    elif(dir % 3 == 0): #northeast and southwest
+    elif(dir % 3 == 0): #0 and 3 --> northeast and southwest
         x = lambda l: l
         y = lambda l: l.neighbor((dir + 1) % 6)
-    else: #(dir % 3 == 1) ->  northwest and southeast
+    else: #(dir % 3 == 1) -> 1 and 4 --> northwest and southeast
         x = lambda l: l.neighbor((dir) % 6)
         y = lambda l: l.neighbor((dir + 2) % 6)
     c = 0
