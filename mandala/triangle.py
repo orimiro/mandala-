@@ -9,6 +9,9 @@ class Triangle:  # shape?
         self.color = color
 
     def draw(self, scale):
+        stroke(30)
+        fill(0, 100, 100)
+        strokeWeight(0.5)
         s = createShape()
         s.beginShape()
         coordinates = self.points()
@@ -16,8 +19,6 @@ class Triangle:  # shape?
             cart = c.cartesian(scale)
             s.vertex(cart[0], cart[1])
         s.endShape(CLOSE)
-        noStroke()
-        fill(0, 100, 100)
         shape(s)
 
     def points(self):

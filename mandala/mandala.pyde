@@ -3,7 +3,7 @@ import test
 import patternGen
 count=0
 def setup():
-    size(400,400)
+    size(600,600)
     stroke(255)
     runTest()
 

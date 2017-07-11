@@ -46,25 +46,24 @@ def hexagonCircle(scale, coord, line):
 
 
 def drawLine(scale, a, b):
-    dir = a.lineDir(b)
-    if( dir % 3 == 2):
-        global x
+    dir = a.lineDir(b) #getting line direction
+    if( dir % 3 == 2): #west and east
         x = lambda l: l.neighbor((dir + 1) % 6)
         y = lambda l: l
-    elif(dir % 3 == 0):
+    elif(dir % 3 == 0): #northeast and southwest
         x = lambda l: l
         y = lambda l: l.neighbor((dir + 1) % 6)
-    else:
+    else: #(dir % 3 == 1) ->  northwest and southeast
         x = lambda l: l.neighbor((dir) % 6)
         y = lambda l: l.neighbor((dir + 2) % 6)
     c = 0
     while(True):
-        tr = Triangle(None, x(a), dir % 2 != 0)
+        tr = Triangle(None, x(a), dir % 2 != 0) # dir % 2 != 0 -> true/false --> with the directions you have 6 possibilitys 
         tr.draw(scale)
         a = a.neighbor(dir)
         if(a.a == b.a and a.b == b.b):
             break
-        tr = Triangle(None, y(a), dir % 2 == 0)
+        tr = Triangle(None, y(a), dir % 2 == 0) # dir % 2 == 0 -> true/false --> with the directions you have 6 possibilitys 
         tr.draw(scale)
 
 def triangleDrawEast(scale, start, end, up):
@@ -115,7 +114,10 @@ def demo():
     # triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
     # triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
     # hexagonCircle(scale, Coordinate(1, 0, 0), 1)
-    c = Coordinate(1, 0, 0).sw(2).se(2)
-    hexagonCircle(scale, c, int(mouseY / 25))
-    hexagonCircle(scale, c.ne(5), int(mouseY / 25))
-    hexagonCircle(scale, c.nw(5), int(mouseY / 25))
+    #c = Coordinate(1, 0, 0).sw(2).se(2)
+    #hexagonCircle(scale, c, int(mouseY / 25))
+    #hexagonCircle(scale, c.ne(5), int(mouseY / 25))
+    #hexagonCircle(scale, c.nw(5), int(mouseY / 25))
+    c = Coordinate(1/3,1/3,1-(2/3))
+    for i in range(int(mouseY / 25)):
+        hexagonCircle(scale,c,i)
