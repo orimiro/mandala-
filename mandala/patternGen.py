@@ -41,29 +41,33 @@ def hexagonCircle(scale, coord, line):
     if line < 1:
         return
     edges = [coord.neighbor(i, line) for i in range(6)]
-    for i in range (6):
-        drawLine(scale, edges[i], edges[(i+1)%6])
+    for i in range(6):
+        drawLine(scale, edges[i], edges[(i + 1) % 6])
 
 
 def drawLine(scale, a, b):
-    dir = a.lineDir(b) #getting line direction
-    if( dir % 3 == 2): # 2 and 5 --> west and east
-        x = lambda l: l.neighbor((dir + 1) % 6)
-        y = lambda l: l
-    elif(dir % 3 == 0): #0 and 3 --> northeast and southwest
-        x = lambda l: l
-        y = lambda l: l.neighbor((dir + 1) % 6)
-    else: #(dir % 3 == 1) -> 1 and 4 --> northwest and southeast
-        x = lambda l: l.neighbor((dir) % 6)
-        y = lambda l: l.neighbor((dir + 2) % 6)
+    dir = a.lineDir(b)  # getting line direction
+    if(dir % 3 == 2):  # 2 and 5 --> west and east
+        coordA = lambda l: l.neighbor((dir + 1) % 6)
+        coordB = lambda l: l
+    elif(dir % 3 == 0):  # 0 and 3 --> northeast and southwest
+        coordA = lambda l: l
+        coordB = lambda l: l.neighbor((dir + 1) % 6)
+    else:  # (dir % 3 == 1) -> 1 and 4 --> northwest and southeast
+        coordA = lambda l: l.neighbor((dir) % 6)
+        coordB = lambda l: l.neighbor((dir + 2) % 6)
     c = 0
     while(True):
-        tr = Triangle(None, x(a), dir % 2 != 0) # dir % 2 != 0 -> true/false --> with the directions you have 6 possibilitys 
+        # dir % 2 != 0 -> true/false --> with the directions you have 6
+        # possibilitys
+        tr = Triangle(None, coordA(a), dir % 2 != 0)
         tr.draw(scale)
         a = a.neighbor(dir)
         if(a.a == b.a and a.b == b.b):
             break
-        tr = Triangle(None, y(a), dir % 2 == 0) # dir % 2 == 0 -> true/false --> with the directions you have 6 possibilitys 
+        # dir % 2 == 0 -> true/false --> with the directions you have 6
+        # possibilitys
+        tr = Triangle(None, coordB(a), dir % 2 == 0)
         tr.draw(scale)
 
 def triangleDrawEast(scale, start, end, up):
@@ -107,17 +111,76 @@ def triangleESE(scale, start, n, up):
     a, b, c = start.bary
     triangleAB(scale, start, ceil(n / 2), up)
     triangleAB(scale, Coordinate(a - 1, b + 1), floor(n / 2), not up)
+
+def patterndLine(scale, a, dir, n, z):
+    # Draws a patternd Line
+    dir = dir % 6
+    if(dir % 3 == 2):
+        a = a.neighbor(dir).neighbor((dir + 1) % 6, 2)
+    elif(dir % 3 == 1):
+        a = a.neighbor(dir, 2).neighbor((dir + 1) % 6)
+    else:
+        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+    c = 0
+    while(c < n):
+        tr = Triangle(
+            None,
+            a,
+            (dir + z % 5) % 2 != 0)
+        tr.draw(scale)
+        tr = Triangle(
+            None,
+            a.neighbor((dir + 3 - z) % 6),
+            (dir + z % 11) % 2 != 0)
+        tr.draw(scale)
+        tr = Triangle(
+            None,
+            a.neighbor((dir + 4 + z) % 6),
+            (dir + z % 23) % 2 != 0)
+        tr.draw(scale)
+        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+        c += 1
+
 def demo():
-    scale = 20
-    # triangleAB(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    # triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    # triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    # triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
-    # hexagonCircle(scale, Coordinate(1, 0, 0), 1)
-    #c = Coordinate(1, 0, 0).sw(2).se(2)
-    #hexagonCircle(scale, c, int(mouseY / 25))
-    #hexagonCircle(scale, c.ne(5), int(mouseY / 25))
-    #hexagonCircle(scale, c.nw(5), int(mouseY / 25))
-    c = Coordinate(1/3,1/3,1-(2/3))
+    scale = 10
+    """
+    triangleAB(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
+    hexagonCircle(scale, Coordinate(1, 0, 0), 1)
+    c = Coordinate(1, 0, 0).sw(2).se(2)
+    hexagonCircle(scale, c, int(mouseY / 25))
+    hexagonCircle(scale, c.ne(5), int(mouseY / 25))
+    hexagonCircle(scale, c.nw(5), int(mouseY / 25))
+    c = Coordinate(1, 0, 0)
     for i in range(int(mouseY / 25)):
-        hexagonCircle(scale,c,i)
+        hexagonCircle(scale, c, i)
+    """
+    c = Coordinate(1, 0, 0)
+    for i in range(6):
+        patterndLine(scale, c, i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(0, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(0, 9).neighbor(0, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(0, 9).neighbor(
+            0, 9).neighbor(2, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(1, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(1, 9).neighbor(1, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(1, 9).neighbor(
+            1, 9).neighbor(3, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(2, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(2, 9).neighbor(2, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(2, 9).neighbor(
+            2, 9).neighbor(4, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(3, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(3, 9).neighbor(3, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(3, 9).neighbor(
+            3, 9).neighbor(5, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(4, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(4, 9).neighbor(4, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(4, 9).neighbor(
+            4, 9).neighbor(0, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(5, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(5, 9).neighbor(5, 9), i, 2, mouseY / 10)
+        patterndLine(scale, c.neighbor(5, 9).neighbor(
+            5, 9).neighbor(1, 9), i, 2, mouseY / 10)

@@ -10,7 +10,7 @@ class Triangle:  # shape?
 
     def draw(self, scale):
         stroke(30)
-        fill(0, 100, 100)
+        fill(255, 255, 255,40)
         strokeWeight(0.5)
         s = createShape()
         s.beginShape()
