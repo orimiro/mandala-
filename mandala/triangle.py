@@ -1,5 +1,10 @@
 from graph import Node
 
+class Triangles:
+
+    def __init__(self, dict):
+        self.dict = dict
+
 class Triangle:  # shape?
 
     def __init__(self, node, coordinate, up, color=None):
@@ -10,7 +15,7 @@ class Triangle:  # shape?
 
     def draw(self, scale):
         stroke(30)
-        fill(255, 255, 255,40)
+        fill(0)
         strokeWeight(0.5)
         s = createShape()
         s.beginShape()
