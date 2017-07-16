@@ -149,12 +149,62 @@ def patterndLine(canvas, a, dir, n, z):
 
         a = a.neighbor(dir).neighbor(dir + 1)
         c += 1
+        
+def patternA(canvas, coordinate, schichten, variation):
+    pattern_1(canvas, coordinate, 2, variation)
+    for n in range(6):
+        direction = coordinate.neighbor(n, 9)
+        pattern_2(canvas, direction, 2, variation, n)
+        layers = direction
+        for s in range(2, schichten):
+            layers = layers.neighbor(n, 9)
+            if(s % 2 == 0):
+                pattern_1(canvas, layers, 2, variation)
+            else:
+                pattern_2(canvas, layers, 2, variation, n)
+            d = layers.neighbor(n + 2, 9)
+            pattern_2(canvas, d, 2, variation,
+                     ((s % 2) * 2) + n + 2)
+            for l in range(2, s):
+                d = d.neighbor(n + 2, 9)
+                if(s % 2 == 0):
+                    if(l % 2 == 0):
+                        pattern_1(canvas, d, 2, variation)
+                    else:
+                        pattern_2(canvas, d, 2, variation, (l % 2) + n + 1)
+                else:
+                    pattern_2(canvas, d, 2, variation, (l % 2) + n)
 
-def pattern1(canvas, coordinate, size, variation):
+def patternB(canvas, coordinate, schichten, variation):
+    pattern_1(canvas, coordinate, 2, variation)
+    for n in range(6):
+        direction = coordinate.neighbor(n, 9)
+        pattern_2(canvas, direction, 2, variation+1, n)
+        layers = direction
+        for s in range(2, schichten):
+            layers = layers.neighbor(n, 9)
+            if(s % 2 == 0):
+                pattern_1(canvas, layers, 2, variation+s)
+            else:
+                pattern_2(canvas, layers, 2, variation+s, n)
+            d = layers.neighbor(n + 2, 9)
+            pattern_2(canvas, d, 2, variation+s,
+                     ((s % 2) * 2) + n + 2)
+            for l in range(2, s):
+                d = d.neighbor(n + 2, 9)
+                if(s % 2 == 0):
+                    if(l % 2 == 0):
+                        pattern_1(canvas, d, 2, variation+s)
+                    else:
+                        pattern_2(canvas, d, 2, variation+s, (l % 2) + n + 1)
+                else:
+                    pattern_2(canvas, d, 2, variation+s, (l % 2) + n)
+
+def pattern_1(canvas, coordinate, size, variation):
     for i in range(6):
         patterndLine(canvas, coordinate, i, size, variation)
 
-def pattern2(canvas, coordinate, size, variation, direction):
+def pattern_2(canvas, coordinate, size, variation, direction):
     for i in range(6):
         patterndLine2(canvas, coordinate, i, 2, variation, direction)
 
@@ -179,26 +229,5 @@ def demo(canvas):
     z = mouseY / 10
 
     schichten = 4
-    pattern1(canvas, c, 2, z)
-    for n in range(6):
-        direction = c.neighbor(n, 9)
-        pattern2(canvas, direction, 2, z, n)
-        layers = direction
-        for s in range(2, schichten):
-            layers = layers.neighbor(n, 9)
-            if(s % 2 == 0):
-                pattern1(canvas, layers, 2, z)
-            else:
-                pattern2(canvas, layers, 2, z, n)
-            d = layers.neighbor(n + 2, 9)
-            pattern2(canvas, d, 2, z,
-                     ((s % 2) * 2) + n + 2)
-            for l in range(2, s):
-                d = d.neighbor(n + 2, 9)
-                if(s % 2 == 0):
-                    if(l % 2 == 0):
-                        pattern1(canvas, d, 2, z)
-                    else:
-                        pattern2(canvas, d, 2, z, (l % 2) + n + 1)
-                else:
-                    pattern2(canvas, d, 2, z, (l % 2) + n)
+    #patternA(canvas, c, schichten, z)
+    patternB(canvas, c, schichten, z)
