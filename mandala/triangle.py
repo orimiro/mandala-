@@ -1,10 +1,64 @@
 from graph import Node
 
-class Triangles:
+class Canvas:
+    def __init__(self, bounds, scale):
+        self.bounds = bounds
+        self.scale = scale
+        self.triangles = []
 
-    def __init__(self, dict):
-        self.dict = dict
+    def mapCoordinates(self, coordinate, up):
+        # yeah, change this when there is time...
+        # map negative coordinate to odd and positive ones to even indices
+        mapCoordA = lambda i, up: 2 * i if i >= 0 else -2 * i - 1
+        # leave space for two triangles per coordinate (up and down)
+        mapCoordB = lambda i, up: (2 if up else 0) + (4 * i if i >= 0 else -4 * i - 1)
+        a = mapCoordA(coordinate.a, up)
+        b = mapCoordB(coordinate.b, up)
+        return (a, b)
 
+    def add(self, triangle, overwrite=False):
+        coordinate = triangle.coordinate
+        up = triangle.up
+        a, b = self.mapCoordinates(coordinate, up)
+        # expand array if neccessary
+        la = len(self.triangles)
+        if la <= a:
+            for _ in range(l, a + 1):
+                # add individual empty lists
+                self.triangles += [[]]
+        # expand array for second coordinate
+        lb = len(self.triangles[a])
+        if lb <= b:
+            self.triangles += (b - lb + 1) * [None]
+
+        # store triangle if there is none yet
+        if self.triangles[a][b] is None or overwrite:
+        # add bidirectional link between triangle and canvas
+            self.triangles[a][b] = triangle
+            triangle.addCanvas(self)
+        return self.triangles[a][b]
+
+    def rm(self, coordinate, up):
+        a, b = self.mapCoordinates(coordinate, up)
+        if len(self.triangles) > a:
+            if len(self.triangles[a]) > b:
+                self.triangles[a][b] = None
+
+    def get(self, coordinate, up):
+        a, b = self.mapCoordinates(coordinate, up)
+        if len(self.triangles) > a:
+            if len(self.triangles[a]) > b:
+                return self.triangles[a][b]
+
+    def getNeighbor(self, triangle, direction):
+        pass
+
+    def draw(self):
+        scale = self.scale
+        for ts in self.triangles:
+            for t in ts:
+                if t:
+                    t.draw(scale)
 class Triangle:  # shape?
 
     def __init__(self, node, coordinate, up, color=None):
@@ -12,6 +66,10 @@ class Triangle:  # shape?
         self.coordinate = coordinate
         self.up = up
         self.color = color
+        self.canvas = None
+
+    def addCanvas(self, canvas):
+        self.canvas = canvas
 
     def draw(self, scale):
         stroke(30)
@@ -36,6 +94,11 @@ class Triangle:  # shape?
                     Coordinate(self.coordinate.a - 1, self.coordinate.b + 1),
                     self.coordinate)
 
+    def getNeighbor(self, direction):
+        """return neighbor if canvas is set"""
+        if self.canvas is not None:
+            return self.canvas.getNeighbor(self, direction)
+        return None
 
 h = sqrt(0.75)  # height of the triangle
 
