@@ -1,8 +1,7 @@
 from graph import Node
 
 class Canvas:
-    def __init__(self, bounds, scale):
-        self.bounds = bounds
+    def __init__(self, scale):
         self.scale = scale
         self.triangles = []
 
@@ -16,6 +15,12 @@ class Canvas:
         b = mapCoordB(coordinate.b, up)
         return (a, b)
 
+    def show(self, coordinate, up):
+        tr = self.get(coordinate, up)
+        if tr is None:
+            self.add(Triangle(None, coordinate, up))
+        tr.show()
+
     def add(self, triangle, overwrite=False):
         coordinate = triangle.coordinate
         up = triangle.up
@@ -23,13 +28,13 @@ class Canvas:
         # expand array if neccessary
         la = len(self.triangles)
         if la <= a:
-            for _ in range(l, a + 1):
+            for _ in range(la, a + 1):
                 # add individual empty lists
                 self.triangles += [[]]
         # expand array for second coordinate
         lb = len(self.triangles[a])
         if lb <= b:
-            self.triangles += (b - lb + 1) * [None]
+            self.triangles[a] += (b - lb + 1) * [None]
 
         # store triangle if there is none yet
         if self.triangles[a][b] is None or overwrite:
@@ -59,6 +64,19 @@ class Canvas:
             for t in ts:
                 if t:
                     t.draw(scale)
+
+    def hideAll(self):
+        for ts in self.triangles:
+            for t in ts:
+                if t:
+                    t.hide()
+        
+    def showAll(self):
+        for ts in self.triangles:
+            for t in ts:
+                if t:
+                    t.show()
+        
 class Triangle:  # shape?
 
     def __init__(self, node, coordinate, up, color=None):
@@ -67,22 +85,30 @@ class Triangle:  # shape?
         self.up = up
         self.color = color
         self.canvas = None
+        self.visible = True
+
+    def show(self):
+        self.visible = True
+
+    def hide(self):
+        self.visible = False
 
     def addCanvas(self, canvas):
         self.canvas = canvas
 
     def draw(self, scale):
-        stroke(30)
-        fill(0)
-        strokeWeight(0.5)
-        s = createShape()
-        s.beginShape()
-        coordinates = self.points()
-        for c in coordinates:
-            cart = c.cartesian(scale)
-            s.vertex(cart[0], cart[1])
-        s.endShape(CLOSE)
-        shape(s)
+        if self.visible:
+            stroke(30)
+            fill(0)
+            strokeWeight(0.5)
+            s = createShape()
+            s.beginShape()
+            coordinates = self.points()
+            for c in coordinates:
+                cart = c.cartesian(scale)
+                s.vertex(cart[0], cart[1])
+            s.endShape(CLOSE)
+            shape(s)
 
     def points(self):
         if(self.up is False):

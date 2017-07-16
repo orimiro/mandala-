@@ -1,6 +1,6 @@
 from triangle import Coordinate, Triangle
 
-def nativeHexagon(scale, coord):
+def nativeHexagon(canvas, coord):
     coords = list(coord.neighbors())
     s = createShape()
     s.beginShape()
@@ -10,15 +10,15 @@ def nativeHexagon(scale, coord):
     s.endShape(CLOSE)
     shape(s)
 
-def hexagonCircle(scale, coord, line):
+def hexagonCircle(canvas, coord, line):
     if line < 1:
         return
     edges = [coord.neighbor(i, line) for i in range(6)]
     for i in range(6):
-        drawLine(scale, edges[i], edges[(i + 1) % 6])
+        drawLine(canvas, edges[i], edges[(i + 1) % 6])
 
 
-def drawLine(scale, a, b):
+def drawLine(canvas, a, b):
     dir = a.lineDir(b)  # getting line direction
     if(dir % 3 == 2):  # 2 and 5 --> west and east
         coordA = lambda l: l.neighbor((dir + 1) % 6)
@@ -34,58 +34,58 @@ def drawLine(scale, a, b):
         # dir % 2 != 0 -> true/false --> with the directions you have 6
         # possibilitys
         tr = Triangle(None, coordA(a), dir % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         a = a.neighbor(dir)
         if(a.a == b.a and a.b == b.b):
             break
         # dir % 2 == 0 -> true/false --> with the directions you have 6
         # possibilitys
         tr = Triangle(None, coordB(a), dir % 2 == 0)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleDrawEast(scale, start, end, up):
+def triangleDrawEast(canvas, start, end, up):
     for i in range(start, end):
         tr = Triangle(None, Coordinate(0, i), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleDrawSE(scale, start, end, up):
+def triangleDrawSE(canvas, start, end, up):
     for i in range(start, end):
         tr = Triangle(None, Coordinate(i, 0), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleDrawSW(scale, start, end, up):
+def triangleDrawSW(canvas, start, end, up):
     for i in range(start, end):
         tr = Triangle(None, Coordinate(i, -i), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleFillRect(scale, leftUpper, rightLower):
+def triangleFillRect(canvas, leftUpper, rightLower):
     for i in range(0, 1):
         pass
 
-def triangleAB(scale, start, n, up):
+def triangleAB(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
         tr = Triangle(None, Coordinate(a + i, b + i), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleBC(scale, start, n, up):
+def triangleBC(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
         tr = Triangle(None, Coordinate(a - 2 * i, b + i, c + i), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleAC(scale, start, n, up):
+def triangleAC(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
         tr = Triangle(None, Coordinate(a + i, b - 2 * i, c + i), up)
-        tr.draw(scale)
+        canvas.add(tr)
 
-def triangleESE(scale, start, n, up):
+def triangleESE(canvas, start, n, up):
     a, b, c = start.bary
-    triangleAB(scale, start, ceil(n / 2), up)
-    triangleAB(scale, Coordinate(a - 1, b + 1), floor(n / 2), not up)
+    triangleAB(canvas, start, ceil(n / 2), up)
+    triangleAB(canvas, Coordinate(a - 1, b + 1), floor(n / 2), not up)
 
-def patterndLine2(scale, a, dir, n, z, nr):
+def patterndLine2(canvas, a, dir, n, z, nr):
     # Draws a point
     dir = dir % 6
     # defining the start of the line, depending of direction:
@@ -103,49 +103,49 @@ def patterndLine2(scale, a, dir, n, z, nr):
             a,
             (dir + z % 5) % 2 != 0)
         if(dir % 3 != (nr + 1) % 3):
-            tr.draw(scale)
+            canvas.add(tr)
         else:
             c += 1
         tr = Triangle(
             None,
             a.neighbor((dir + 3 - z) % 6),
             (dir + z % 11) % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         tr = Triangle(
             None,
             a.neighbor((dir + 4 + z) % 6),
             (dir + z) % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         a = a.neighbor(dir).neighbor((dir + 1) % 6)
         c += 1
     if(dir % 3 == 1 and dir % 3 == (nr + 1) % 3):
         d = b.neighbor((dir + 1) % 6)
-        patterndLine(scale, d, dir - 2, 1, z)
-        patterndLine(scale, d, dir + 2, 1, z)
+        patterndLine(canvas, d, dir - 2, 1, z)
+        patterndLine(canvas, d, dir + 2, 1, z)
         d = b.neighbor((dir + z) % 6)
-        drawLine(scale, d.neighbor(dir, 2), d)
+        drawLine(canvas, d.neighbor(dir, 2), d)
         d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(scale, d, d.neighbor((dir + 1) % 6, 2))
+        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
     if(dir % 3 == 2 and dir % 3 == (nr + 1) % 3):
         d = b.neighbor((dir + 0) % 6)
         b = b.neighbor((dir - 1) % 6)
-        patterndLine(scale, d, dir - 2, 1, z)
-        patterndLine(scale, d, dir + 2, 1, z)
+        patterndLine(canvas, d, dir - 2, 1, z)
+        patterndLine(canvas, d, dir + 2, 1, z)
         d = b.neighbor((dir + z) % 6)
-        drawLine(scale, d.neighbor(dir, 2), d)
+        drawLine(canvas, d.neighbor(dir, 2), d)
         d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(scale, d, d.neighbor((dir + 1) % 6, 2))
+        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
     if(dir % 3 == 0 and dir % 3 == (nr + 1) % 3):
         d = b.neighbor((dir + 1) % 6).neighbor((dir) % 6)
         b = b.neighbor((dir) % 6)
-        patterndLine(scale, d, dir - 2, 1, z)
-        patterndLine(scale, d, dir + 2, 1, z)
+        patterndLine(canvas, d, dir - 2, 1, z)
+        patterndLine(canvas, d, dir + 2, 1, z)
         d = b.neighbor((dir + z) % 6)
-        drawLine(scale, d.neighbor(dir, 2), d)
+        drawLine(canvas, d.neighbor(dir, 2), d)
         d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(scale, d, d.neighbor((dir + 1) % 6, 2))
+        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
 
-def patterndLine(scale, a, dir, n, z):
+def patterndLine(canvas, a, dir, n, z):
     dir = dir % 6
     if(dir % 3 == 2):
         a = a.neighbor(dir).neighbor((dir + 1) % 6, 2)
@@ -157,59 +157,60 @@ def patterndLine(scale, a, dir, n, z):
     while(c < n):
         tr = Triangle(None, a,
                       (dir + z % 5) % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         tr = Triangle(None,
                       a.neighbor((dir + 3 - z) % 6),
                       (dir + z % 11) % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         tr = Triangle(None,
                       a.neighbor((dir + 4 + z) % 6),
                       (dir + z % 23) % 2 != 0)
-        tr.draw(scale)
+        canvas.add(tr)
         a = a.neighbor(dir).neighbor((dir + 1) % 6)
         c += 1
 
-def demo(k):
-    scale = 10
+def demo(k, canvas):
     """
-    triangleAB(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    triangleBC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    triangleAC(scale, Coordinate(1,0,0), int(mouseX/50), True)
-    triangleESE(scale, Coordinate(1, 0, 0), int(mouseX / 50), True)
-    hexagonCircle(scale, Coordinate(1, 0, 0), 1)
+    triangleAB(canvas, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleBC(canvas, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleAC(canvas, Coordinate(1,0,0), int(mouseX/50), True)
+    triangleESE(canvas, Coordinate(1, 0, 0), int(mouseX / 50), True)
+    hexagonCircle(canvas, Coordinate(1, 0, 0), 1)
     c = Coordinate(1, 0, 0).sw(2).se(2)
-    hexagonCircle(scale, c, int(mouseY / 25))
-    hexagonCircle(scale, c.ne(5), int(mouseY / 25))
-    hexagonCircle(scale, c.nw(5), int(mouseY / 25))
+    hexagonCircle(canvas, c, int(mouseY / 25))
+    hexagonCircle(canvas, c.ne(5), int(mouseY / 25))
+    hexagonCircle(canvas, c.nw(5), int(mouseY / 25))
     c = Coordinate(1, 0, 0)
     for i in range(int(mouseY / 25)):
-        hexagonCircle(scale, c, i)
+        hexagonCircle(canvas, c, i)
     """
+    # hide all triangles initially
+    canvas.hideAll()
     c = Coordinate(1, 0, 0)
     z = mouseY/10
     for i in range(6):
-        patterndLine(scale, c, i, 2, z)
-        patterndLine2(scale, c.neighbor(0, 9), i, 2, z, 0)
-        patterndLine(scale, c.neighbor(0, 9).neighbor(0, 9), i, 2, z)
+        patterndLine(canvas, c, i, 2, z)
+        patterndLine2(canvas, c.neighbor(0, 9), i, 2, z, 0)
+        patterndLine(canvas, c.neighbor(0, 9).neighbor(0, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(0, 9).neighbor(0, 9).neighbor(2, 9), i, 2, z, 2)
-        patterndLine2(scale, c.neighbor(1, 9), i, 2, z, 1)
-        patterndLine(scale, c.neighbor(1, 9).neighbor(1, 9), i, 2, z)
+            canvas, c.neighbor(0, 9).neighbor(0, 9).neighbor(2, 9), i, 2, z, 2)
+        patterndLine2(canvas, c.neighbor(1, 9), i, 2, z, 1)
+        patterndLine(canvas, c.neighbor(1, 9).neighbor(1, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(1, 9).neighbor(1, 9).neighbor(3, 9), i, 2, z, 0)
-        patterndLine2(scale, c.neighbor(2, 9), i, 2, z, 2)
-        patterndLine(scale, c.neighbor(2, 9).neighbor(2, 9), i, 2, z)
+            canvas, c.neighbor(1, 9).neighbor(1, 9).neighbor(3, 9), i, 2, z, 0)
+        patterndLine2(canvas, c.neighbor(2, 9), i, 2, z, 2)
+        patterndLine(canvas, c.neighbor(2, 9).neighbor(2, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(2, 9).neighbor(2, 9).neighbor(4, 9), i, 2, z, 1)
-        patterndLine2(scale, c.neighbor(3, 9), i, 2, z, 0)
-        patterndLine(scale, c.neighbor(3, 9).neighbor(3, 9), i, 2, z)
+            canvas, c.neighbor(2, 9).neighbor(2, 9).neighbor(4, 9), i, 2, z, 1)
+        patterndLine2(canvas, c.neighbor(3, 9), i, 2, z, 0)
+        patterndLine(canvas, c.neighbor(3, 9).neighbor(3, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(3, 9).neighbor(3, 9).neighbor(5, 9), i, 2, z, 2)
-        patterndLine2(scale, c.neighbor(4, 9), i, 2, z, 1)
-        patterndLine(scale, c.neighbor(4, 9).neighbor(4, 9), i, 2, z)
+            canvas, c.neighbor(3, 9).neighbor(3, 9).neighbor(5, 9), i, 2, z, 2)
+        patterndLine2(canvas, c.neighbor(4, 9), i, 2, z, 1)
+        patterndLine(canvas, c.neighbor(4, 9).neighbor(4, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(4, 9).neighbor(4, 9).neighbor(0, 9), i, 2, z, 0)
-        patterndLine2(scale, c.neighbor(5, 9), i, 2, z, 2)
-        patterndLine(scale, c.neighbor(5, 9).neighbor(5, 9), i, 2, z)
+            canvas, c.neighbor(4, 9).neighbor(4, 9).neighbor(0, 9), i, 2, z, 0)
+        patterndLine2(canvas, c.neighbor(5, 9), i, 2, z, 2)
+        patterndLine(canvas, c.neighbor(5, 9).neighbor(5, 9), i, 2, z)
         patterndLine2(
-            scale, c.neighbor(5, 9).neighbor(5, 9).neighbor(1, 9), i, 2, z, 1)
+            canvas, c.neighbor(5, 9).neighbor(5, 9).neighbor(1, 9), i, 2, z, 1)
