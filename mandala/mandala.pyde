@@ -2,7 +2,7 @@ from graph import Node
 import test
 import patternGen
 import triangle
-scale = 5
+scale = 15
 canvas = triangle.Canvas(scale)
 def setup():
     size(600,600)

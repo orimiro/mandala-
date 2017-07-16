@@ -21,14 +21,14 @@ def hexagonCircle(canvas, coord, line):
 def drawLine(canvas, a, b):
     dir = a.lineDir(b)  # getting line direction
     if(dir % 3 == 2):  # 2 and 5 --> west and east
-        coordA = lambda l: l.neighbor((dir + 1) % 6)
+        coordA = lambda l: l.neighbor(dir + 1)
         coordB = lambda l: l
     elif(dir % 3 == 0):  # 0 and 3 --> northeast and southwest
         coordA = lambda l: l
-        coordB = lambda l: l.neighbor((dir + 1) % 6)
+        coordB = lambda l: l.neighbor(dir + 1)
     else:  # (dir % 3 == 1) -> 1 and 4 --> northwest and southeast
-        coordA = lambda l: l.neighbor((dir) % 6)
-        coordB = lambda l: l.neighbor((dir + 2) % 6)
+        coordA = lambda l: l.neighbor(dir)
+        coordB = lambda l: l.neighbor(dir + 2)
     c = 0
     while(True):
         # dir % 2 != 0 -> true/false --> with the directions you have 6
@@ -82,11 +82,11 @@ def patterndLine2(canvas, a, dir, n, z, nr):
     dir = dir % 6
     # defining the start of the line, depending of direction:
     if(dir % 3 == 2):
-        a = a.neighbor(dir).neighbor((dir + 1) % 6, 2)
+        a = a.neighbor(dir).neighbor(dir + 1, 2)
     elif(dir % 3 == 1):
-        a = a.neighbor(dir, 2).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir, 2).neighbor(dir + 1)
     else:
-        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir).neighbor(dir + 1)
     c = 0
     b = a
     while(c < n):
@@ -94,60 +94,60 @@ def patterndLine2(canvas, a, dir, n, z, nr):
             canvas.show(a, (dir + z % 5) % 2 != 0)
         else:
             c += 1
-        canvas.show(a.neighbor((dir + 3 - z) % 6),
+        canvas.show(a.neighbor(dir + 3 - z),
                     (dir + z % 11) % 2 != 0)
 
-        canvas.show(a.neighbor((dir + 4 + z) % 6),
+        canvas.show(a.neighbor(dir + 4 + z),
                     (dir + z) % 2 != 0)
 
-        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir).neighbor(dir + 1)
         c += 1
     if(dir % 3 == 1 and dir % 3 == (nr + 1) % 3):
-        d = b.neighbor((dir + 1) % 6)
+        d = b.neighbor(dir + 1)
         patterndLine(canvas, d, dir - 2, 1, z)
         patterndLine(canvas, d, dir + 2, 1, z)
-        d = b.neighbor((dir + z) % 6)
+        d = b.neighbor(dir + z)
         drawLine(canvas, d.neighbor(dir, 2), d)
-        d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
+        d = b.neighbor((dir + 1) % 6 - z).neighbor(dir + 2)
+        drawLine(canvas, d, d.neighbor(dir + 1, 2))
     if(dir % 3 == 2 and dir % 3 == (nr + 1) % 3):
-        d = b.neighbor((dir + 0) % 6)
-        b = b.neighbor((dir - 1) % 6)
+        d = b.neighbor(dir + 0)
+        b = b.neighbor(dir - 1)
         patterndLine(canvas, d, dir - 2, 1, z)
         patterndLine(canvas, d, dir + 2, 1, z)
-        d = b.neighbor((dir + z) % 6)
+        d = b.neighbor(dir + z)
         drawLine(canvas, d.neighbor(dir, 2), d)
-        d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
+        d = b.neighbor((dir + 1) % 6 - z).neighbor(dir + 2)
+        drawLine(canvas, d, d.neighbor(dir + 1, 2))
     if(dir % 3 == 0 and dir % 3 == (nr + 1) % 3):
-        d = b.neighbor((dir + 1) % 6).neighbor((dir) % 6)
-        b = b.neighbor((dir) % 6)
+        d = b.neighbor(dir + 1).neighbor(dir)
+        b = b.neighbor(dir)
         patterndLine(canvas, d, dir - 2, 1, z)
         patterndLine(canvas, d, dir + 2, 1, z)
-        d = b.neighbor((dir + z) % 6)
+        d = b.neighbor(dir + z)
         drawLine(canvas, d.neighbor(dir, 2), d)
-        d = b.neighbor(((dir + 1) % 6 - z) % 6).neighbor((dir + 2) % 6)
-        drawLine(canvas, d, d.neighbor((dir + 1) % 6, 2))
+        d = b.neighbor((dir + 1) % 6 - z).neighbor(dir + 2)
+        drawLine(canvas, d, d.neighbor(dir + 1, 2))
 
 def patterndLine(canvas, a, dir, n, z):
     dir = dir % 6
     if(dir % 3 == 2):
-        a = a.neighbor(dir).neighbor((dir + 1) % 6, 2)
+        a = a.neighbor(dir).neighbor(dir + 1, 2)
     elif(dir % 3 == 1):
-        a = a.neighbor(dir, 2).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir, 2).neighbor(dir + 1)
     else:
-        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir).neighbor(dir + 1)
     c = 0
     while(c < n):
         canvas.show(a, (dir + z % 5) % 2 != 0)
 
-        canvas.show(a.neighbor((dir + 3 - z) % 6),
+        canvas.show(a.neighbor(dir + 3 - z),
                     (dir + z % 11) % 2 != 0)
 
-        canvas.show(a.neighbor((dir + 4 + z) % 6),
+        canvas.show(a.neighbor(dir + 4 + z),
                     (dir + z % 23) % 2 != 0)
 
-        a = a.neighbor(dir).neighbor((dir + 1) % 6)
+        a = a.neighbor(dir).neighbor(dir + 1)
         c += 1
 
 def pattern1(canvas, coordinate, size, variation):
@@ -178,7 +178,7 @@ def demo(canvas):
     c = Coordinate(1, 0, 0)
     z = mouseY / 10
 
-    schichten = 12
+    schichten = 4
     pattern1(canvas, c, 2, z)
     for n in range(6):
         direction = c.neighbor(n, 9)
@@ -190,11 +190,11 @@ def demo(canvas):
                 pattern1(canvas, layers, 2, z)
             else:
                 pattern2(canvas, layers, 2, z, n)
-            d = layers.neighbor((n + 2) % 6, 9)
+            d = layers.neighbor(n + 2, 9)
             pattern2(canvas, d, 2, z,
                      ((s % 2) * 2) + n + 2)
             for l in range(2, s):
-                d = d.neighbor((n + 2) % 6, 9)
+                d = d.neighbor(n + 2, 9)
                 if(s % 2 == 0):
                     if(l % 2 == 0):
                         pattern1(canvas, d, 2, z)

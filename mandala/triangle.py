@@ -199,6 +199,7 @@ class Coordinate:
         return self.sw(-n)
 
     def neighbor(self, dir, n=1):
+        dir = dir % 6
         if dir == 0:
             return self.sw(n)
         elif dir == 1:
