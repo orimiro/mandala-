@@ -19,8 +19,8 @@ class Canvas:
         tr = self.get(coordinate, up)
         if tr is None:
             self.add(Triangle(None, coordinate, up))
-        else:             #little fix 
-            tr.show()     #
+            tr = self.get(coordinate, up)
+        tr.show()
 
     def add(self, triangle, overwrite=False):
         coordinate = triangle.coordinate
