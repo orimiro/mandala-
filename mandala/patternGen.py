@@ -33,30 +33,25 @@ def drawLine(canvas, a, b):
     while(True):
         # dir % 2 != 0 -> true/false --> with the directions you have 6
         # possibilitys
-        tr = Triangle(None, coordA(a), dir % 2 != 0)
-        canvas.add(tr)
+        canvas.show(coordA(a), dir % 2 != 0)
         a = a.neighbor(dir)
         if(a.a == b.a and a.b == b.b):
             break
         # dir % 2 == 0 -> true/false --> with the directions you have 6
         # possibilitys
-        tr = Triangle(None, coordB(a), dir % 2 == 0)
-        canvas.add(tr)
+        canvas.show(coordB(a), dir % 2 == 0)
 
 def triangleDrawEast(canvas, start, end, up):
     for i in range(start, end):
-        tr = Triangle(None, Coordinate(0, i), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(0, i), up)
 
 def triangleDrawSE(canvas, start, end, up):
     for i in range(start, end):
-        tr = Triangle(None, Coordinate(i, 0), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(i, 0), up)
 
 def triangleDrawSW(canvas, start, end, up):
     for i in range(start, end):
-        tr = Triangle(None, Coordinate(i, -i), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(i, -i), up)
 
 def triangleFillRect(canvas, leftUpper, rightLower):
     for i in range(0, 1):
@@ -65,20 +60,17 @@ def triangleFillRect(canvas, leftUpper, rightLower):
 def triangleAB(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
-        tr = Triangle(None, Coordinate(a + i, b + i), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(a + i, b + i), up)
 
 def triangleBC(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
-        tr = Triangle(None, Coordinate(a - 2 * i, b + i, c + i), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(a - 2 * i, b + i, c + i), up)
 
 def triangleAC(canvas, start, n, up):
     a, b, c = start.bary
     for i in range(0, n):
-        tr = Triangle(None, Coordinate(a + i, b - 2 * i, c + i), up)
-        canvas.add(tr)
+        canvas.show(Coordinate(a + i, b - 2 * i, c + i), up)
 
 def triangleESE(canvas, start, n, up):
     a, b, c = start.bary
@@ -98,24 +90,16 @@ def patterndLine2(canvas, a, dir, n, z, nr):
     c = 0
     b = a
     while(c < n):
-        tr = Triangle(
-            None,
-            a,
-            (dir + z % 5) % 2 != 0)
         if(dir % 3 != (nr + 1) % 3):
-            canvas.add(tr)
+            canvas.show(a, (dir + z % 5) % 2 != 0)
         else:
             c += 1
-        tr = Triangle(
-            None,
-            a.neighbor((dir + 3 - z) % 6),
-            (dir + z % 11) % 2 != 0)
-        canvas.add(tr)
-        tr = Triangle(
-            None,
-            a.neighbor((dir + 4 + z) % 6),
-            (dir + z) % 2 != 0)
-        canvas.add(tr)
+        canvas.show(a.neighbor((dir + 3 - z) % 6),
+                    (dir + z % 11) % 2 != 0)
+
+        canvas.show(a.neighbor((dir + 4 + z) % 6),
+                    (dir + z) % 2 != 0)
+
         a = a.neighbor(dir).neighbor((dir + 1) % 6)
         c += 1
     if(dir % 3 == 1 and dir % 3 == (nr + 1) % 3):
@@ -155,17 +139,14 @@ def patterndLine(canvas, a, dir, n, z):
         a = a.neighbor(dir).neighbor((dir + 1) % 6)
     c = 0
     while(c < n):
-        tr = Triangle(None, a,
-                      (dir + z % 5) % 2 != 0)
-        canvas.add(tr)
-        tr = Triangle(None,
-                      a.neighbor((dir + 3 - z) % 6),
-                      (dir + z % 11) % 2 != 0)
-        canvas.add(tr)
-        tr = Triangle(None,
-                      a.neighbor((dir + 4 + z) % 6),
-                      (dir + z % 23) % 2 != 0)
-        canvas.add(tr)
+        canvas.show(a, (dir + z % 5) % 2 != 0)
+
+        canvas.show(a.neighbor((dir + 3 - z) % 6),
+                    (dir + z % 11) % 2 != 0)
+
+        canvas.show(a.neighbor((dir + 4 + z) % 6),
+                    (dir + z % 23) % 2 != 0)
+
         a = a.neighbor(dir).neighbor((dir + 1) % 6)
         c += 1
 
