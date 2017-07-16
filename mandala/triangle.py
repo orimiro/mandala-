@@ -1,6 +1,7 @@
 from graph import Node
 
 class Canvas:
+
     def __init__(self, scale):
         self.scale = scale
         self.triangles = []
@@ -10,17 +11,24 @@ class Canvas:
         # map negative coordinate to odd and positive ones to even indices
         mapCoordA = lambda i, up: 2 * i if i >= 0 else -2 * i - 1
         # leave space for two triangles per coordinate (up and down)
-        mapCoordB = lambda i, up: (2 if up else 0) + (4 * i if i >= 0 else -4 * i - 1)
+        mapCoordB = lambda i, up: (
+            2 if up else 0) + (4 * i if i >= 0 else -4 * i - 1)
         a = mapCoordA(coordinate.a, up)
         b = mapCoordB(coordinate.b, up)
         return (a, b)
 
     def show(self, coordinate, up):
-        tr = self.get(coordinate, up)
-        if tr is None:
-            self.add(Triangle(None, coordinate, up))
+        s = self.scale
+        cart = coordinate.cartesian(s)
+        if(cart[0] > -width / 2 + s / 2  # only show in screen
+           and cart[0] < width / 2 - s / 2
+           and cart[1] > -height / 2 + s
+           and cart[1] < height / 2 - s):
             tr = self.get(coordinate, up)
-        tr.show()
+            if tr is None:
+                self.add(Triangle(None, coordinate, up))
+                tr = self.get(coordinate, up)
+            tr.show()
 
     def add(self, triangle, overwrite=False):
         coordinate = triangle.coordinate
@@ -71,16 +79,16 @@ class Canvas:
             for t in ts:
                 if t:
                     t.hide()
-        
+
     def showAll(self):
         for ts in self.triangles:
             for t in ts:
                 if t:
                     t.show()
-        
-class Triangle:  # shape?
 
-    def __init__(self, node, coordinate, up, color=None):
+class Triangle:
+
+    def __init__(self, node, coordinate, up, color='#000000'):
         self.node = node
         self.coordinate = coordinate
         self.up = up
@@ -99,9 +107,10 @@ class Triangle:  # shape?
 
     def draw(self, scale):
         if self.visible:
-            stroke(30)
-            fill(0)
-            strokeWeight(0.5)
+            stroke(self.color)
+            fill(self.color)
+            # strokeWeight(0.5)
+            noStroke()
             s = createShape()
             s.beginShape()
             coordinates = self.points()
@@ -210,6 +219,9 @@ class Coordinate:
         yield self.sw(-n)
         yield self.se(-n)
         yield self.east(-n)
+
+    def copy(self):
+        return Coordinate(self.a, self.b)
 
     def __str__(self):
         b = self.bary
