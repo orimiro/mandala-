@@ -31,6 +31,7 @@ class Animator(Gtk.DrawingArea):
 ################################################################################
 
 from triangle import *
+from patternGen import *
 
 class mandalaAnimation(Animator):
     def __init__(self, window, **properties):
@@ -38,10 +39,12 @@ class mandalaAnimation(Animator):
         self.window = window
         self.setup = ""
         self.draw_ = ""
-
-        #setup:
+        self.width = 0
+        self.height = 0
         
     def draw(self, ctx, width, height):
+        self.width = width
+        self.height = height
         #draw:
         ctx.translate(width/2, height/2)
         ctx.rotate(math.pi/3*2)

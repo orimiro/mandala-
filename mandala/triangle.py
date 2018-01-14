@@ -9,10 +9,12 @@ h = sqrt(0.75)  # height of the triangle
 class Canvas:
     # triangles will be stored in canvases
     
-    def __init__(self, scale):
+    def __init__(self, scale, width, height):
         self.scale = scale
         self.triangles = []
         self.drawn = False
+        self.width = width
+        self.height = height
 
     def __str__(self):
         s = ''
@@ -34,6 +36,29 @@ class Canvas:
         a = mapCoordA(coordinate.a, up)
         b = mapCoordB(coordinate.b, up)
         return(a, b)
+
+    def show(self, coordinate, up):
+        s = self.scale
+        width = self.width
+        height = self.height
+        cart = coordinate.cartesian(s)
+        """ doesnt work :/
+        if(cart[0] > -width / 2 + s / 2  # only show in screen
+           and cart[0] < width / 2 - s / 2
+           and cart[1] > -height / 2 + s
+           and cart[1] < height / 2 - s):
+        """
+        tr = self.get(coordinate, up)
+        if tr is None:
+            self.add(Triangle(coordinate, up))
+            tr = self.get(coordinate, up)
+        tr.show()
+        
+    def hideAll(self):
+        for ts in self.triangles:
+            for t in ts:
+                if t:
+                    t.hide()
 
     def add(self, triangle, overwrite=False):
         coordinate = triangle.coordinate
@@ -57,11 +82,18 @@ class Canvas:
             triangle.addCanvas(self)
         return self.triangles[a][b]
 
+    def get(self, coordinate, up):
+        a,b = self.mapCoordinates(coordinate, up)
+        if len(self.triangles) > a:
+            if len(self.triangles[a]) > b:
+                   return self.triangles[a][b]
+    """
     def makeTriangle(self, up,  a, b, color = 'BLACK'):
         cor = Coordinate(a,b)
         tr =  Triangle(cor, up, color)
         self.add(tr, True)
         self.drawn = False
+    """
 
     def draw(self, ctx, pri=False):
         #draws all triangles to the screen
@@ -135,6 +167,12 @@ class Triangle:
             ctx.fill()
             """
             #"""
+
+    def show(self):
+        self.visible = True
+
+    def hide(self):
+        self.visible = False
             
     def addCanvas(self, canvas):
         self.canvas = canvas
@@ -176,6 +214,31 @@ class Coordinate:
         y = - h * self.bary[0] - h * self.bary[1]
         return (scale * x, scale * y)
 
+    def bary_sameLine(self, coord):
+        """ checks if two coordinates are on the same line in the bary-grid """
+        return (coord.a == self.a or coord.b == self.b or coord.c == self.c)
+
+    def lineDir(self, i):
+        """ 
+        gives out direction if you go from self to coord 
+        only works if coords are on the same line
+        """
+        if(self.bary_sameLine(i)):
+            if(i.c == self.c and i.a >= self.a and i.b <= self.b):
+                return 0 # northeast
+            if(i.b == self.b and i.a >= self.a and i.c <= self.c):
+                return 1 # northwest
+            if(i.a == self.a and i.b >= self.b and i.c <= self.c):
+                return 2 # west
+            if(i.c == self.c and i.a <= self.a and i.b >= self.b):
+                return 3 # southwest
+            if(i.b == self.b and i.a <= self.a and i.c >= self.c):
+                return 4 # southeast
+            if(i.a == self.a and i.b <= self.b and i.c >= self.c):
+                return 5 # east
+        else:
+            raise Exception("barys are on different lines")
+
     def east(self, n=1):
         return Coordinate(self.a, self.b + n)
 
@@ -194,3 +257,17 @@ class Coordinate:
     def ne(self, n=1):
         return self.sw(-n)
 
+    def neighbor(self, dir, n=1):
+        dir = dir % 6
+        if dir == 0:
+            return self.sw(n)
+        elif dir == 1:
+            return self.se(n)
+        elif dir == 2:
+            return self.east(n)
+        elif dir == 3:
+            return self.sw(-n)
+        elif dir == 4:
+            return self.se(-n)
+        elif dir == 5:
+            return self.east(-n)

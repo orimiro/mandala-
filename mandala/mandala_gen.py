@@ -16,6 +16,7 @@ from animator import mandalaAnimation
 
 ################################################################################
 class mainwindow(Gtk.Window):
+    # class of the gtk Window
     def __init__(self):
         Gtk.Window.__init__(self, title= "Triangle Project")
         self.set_default_size(1000,600)
@@ -46,31 +47,25 @@ class mainwindow(Gtk.Window):
         
         self.setup_text_and_window[0].get_buffer().set_text(
 """
-self.can = Canvas(180)
+self.can = Canvas(25,self.width,self.height)
 can = self.can
-can.makeTriangle(True,0,0)
-can.makeTriangle(False,0,0)
-can.makeTriangle(True,1,0)
-can.makeTriangle(True,1,-1)
-can.makeTriangle(False,-1,0)
-can.makeTriangle(False,-1,1)
-can.makeTriangle(False,0,1)
-can.makeTriangle(False,0,-1)
-can.makeTriangle(False,-2,1)
 
-self.x = 0
+self.x=0
+ctx.set_source_rgb(0.5,0.5,1)
+
 """
         )
         
         self.draw_text_and_window[0].get_buffer().set_text(
 """# ctx is cairo context
 
-self.x+=0.01
-
-ctx.translate(50,-30)
-r = g = b = self.x % 1
-ctx.set_source_rgb(r,g,b)
+self.x+=1
+self.x%=10
+hexagonCircle(self.can, Coordinate(0,0), self.x)
 self.can.draw(ctx)
+self.can.hideAll()
+
+ctx.set_source_rgb(0.5,0.5,1)
 """
         )
 
