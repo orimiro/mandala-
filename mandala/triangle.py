@@ -37,7 +37,7 @@ class Canvas:
         b = mapCoordB(coordinate.b, up)
         return(a, b)
 
-    def show(self, coordinate, up):
+    def show(self, coordinate, up, color = None):
         s = self.scale
         width = self.width
         height = self.height
@@ -50,8 +50,11 @@ class Canvas:
         """
         tr = self.get(coordinate, up)
         if tr is None:
-            self.add(Triangle(coordinate, up))
+            self.add(Triangle(coordinate, up, color))
             tr = self.get(coordinate, up)
+        elif color is not None:
+            tr.setColor(color)
+            
         tr.show()
         
     def hideAll(self):
@@ -114,7 +117,7 @@ class Triangle:
     # coordinate:  the central edge
     # up(boolean): central edge above or below the triangle 
     
-    def __init__(self, coordinate, up, color="BLACK"):
+    def __init__(self, coordinate, up, color = None):
         self.coordinate = coordinate
         self.up = up
         self.color = color
@@ -137,7 +140,7 @@ class Triangle:
                     Coordinate(self.coordinate.a - 1, self. coordinate.b + 1),
                     self.coordinate)
 
-    def draw(self,ctx, scale):
+    def draw(self, ctx, scale):
         
         if self.visible:
             coordinates = self.points()
@@ -148,6 +151,10 @@ class Triangle:
             cart = coordinates[2].cartesian(scale)
             x2,y2 = cart[0], cart[1]
             
+            color = self.color
+            if color is not None:
+                ctx.set_source_rgb(color[0],color[1],color[2])
+            """
             ctx.new_path()
             ctx.move_to(x,y)
             ctx.line_to(x1, y1)
@@ -156,7 +163,6 @@ class Triangle:
             
             ctx.stroke()
             """
-            ctx.set_source_rgb(0.7, 0.7, 0.7)
 
             ctx.new_path()
             ctx.move_to(x,y)
@@ -168,6 +174,9 @@ class Triangle:
             """
             #"""
 
+    def setColor(self, color):
+        self.color = color
+            
     def show(self):
         self.visible = True
 
